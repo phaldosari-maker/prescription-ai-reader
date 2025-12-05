@@ -21,6 +21,7 @@ def analyze_prescription_gemini(api_key, image):
     
     # نستخدم موديل فلاش لأنه سريع ومجاني وكفؤ
     model = model = genai.GenerativeModel('gemini-1.5-flash-latest')
+    pip install --upgrade google-generativeai
     
     prompt = """
     أنت صيدلي خبير ومساعد طبي بالذكاء الاصطناعي.
@@ -59,5 +60,5 @@ if uploaded_file is not None:
                 st.markdown("### 📋 النتيجة:")
                 st.markdown(result)
                 st.warning("⚠️ تنبيه: الذكاء الاصطناعي قد يخطئ. راجع الصيدلي عبدالرحمن دائماً.")
-                pip install --upgrade google-generativeai
+                
 
