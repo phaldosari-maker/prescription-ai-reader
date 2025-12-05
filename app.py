@@ -1,55 +1,29 @@
 import streamlit as st
 import google.generativeai as genai
-from PIL import Image
 
-# --- إعدادات الصفحة ---
-st.set_page_config(page_title="محلل الوصفات (Gemini 1.5)", layout="centered")
-st.title("🩺 الدوسري قارئ الوصفات الطبية")
+st.title("🛠 فحص موديلات جوجل")
 
-# --- إدخال المفتاح ---
-api_key = st.text_input("أدخل مفتاح Google API Key:", type="password")
+api_key = st.text_input("ضع مفتاح API هنا للفحص:", type="password")
 
-# --- دالة التحليل ---
-def analyze_prescription_gemini(api_key, image):
-    try:
-        genai.configure(api_key=api_key)
-        
-        # --- (تغيير مهم) نستخدم الاسم الأحدث للموديل ---
-        model_name = 'gemini-1.5-flash-latest' 
-        
-        # إنشاء الموديل
-        model = genai.GenerativeModel(model_name)
-        
-        prompt = """
-        أنت صيدلي خبير. استخرج أسماء الأدوية والجرعات من هذه الوصفة الطبية.
-        اكتب النتيجة في جدول واضح باللغة العربية.
-        """
-        
-        response = model.generate_content([prompt, image])
-        return response.text
-
-    except Exception as e:
-        # هذا السطر سيطبع الخطأ بالتفصيل
-        return f"خطأ: {e}"
-
-# --- واجهة الرفع ---
-uploaded_file = st.file_uploader("ارفع صورة الوصفة", type=["jpg", "png", "jpeg"])
-
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
-    st.image(image, caption='الوصفة المرفقة', use_column_width=True)
-    
-    if st.button("🔍 تحليل الوصفة"):
-        if not api_key:
-            st.error("الرجاء إدخال المفتاح")
-        else:
-            with st.spinner('جاري الاتصال...'):
-                result = analyze_prescription_gemini(api_key, image)
+if st.button("افحص الموديلات المتاحة لي"):
+    if not api_key:
+        st.error("أدخل المفتاح أولاً")
+    else:
+        try:
+            genai.configure(api_key=api_key)
+            st.info("جاري الاتصال بجوجل لجلب القائمة...")
+            
+            # نطلب من جوجل قائمة الموديلات
+            found_any = False
+            for m in genai.list_models():
+                # نبحث عن الموديلات التي تدعم إنشاء المحتوى (generateContent)
+                if 'generateContent' in m.supported_generation_methods:
+                    st.success(f"✅ موديل متاح: {m.name}")
+                    found_any = True
+            
+            if not found_any:
+                st.warning("⚠️ اتصلنا بجوجل ولكن القائمة فارغة! هذا يعني أن الحساب محظور جغرافياً.")
                 
-                # إذا كان هناك خطأ يحتوي على كلمة 404، نعطي نصيحة
-                if "404" in result:
-                    st.error(result)
-                    st.warning("⚠️ لا يزال هناك مشكلة في الاتصال. تأكد من أن الـ VPN يعمل على وضع (All Traffic) وليس فقط المتصفح.")
-                else:
-                    st.success("تم!")
-                    st.markdown(result)
+        except Exception as e:
+            st.error(f"❌ خطأ في الاتصال: {e}")
+            st.write("نصيحة: تأكد أن الـ VPN يعمل على اللابتوب بالكامل")
