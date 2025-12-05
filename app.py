@@ -20,7 +20,7 @@ def analyze_prescription_gemini(api_key, image):
     genai.configure(api_key=api_key)
     
     # نستخدم موديل فلاش لأنه سريع ومجاني وكفؤ
-    model = model = pip install --upgrade google-generativeai
+    model = genai.GenerativeModel('gemini-1.5-flash')
 
     prompt = """
     أنت صيدلي خبير ومساعد طبي بالذكاء الاصطناعي.
