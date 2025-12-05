@@ -3,7 +3,7 @@ import google.generativeai as genai
 from PIL import Image
 
 # --- إعدادات الصفحة ---
-st.set_page_config(page_title="محلل الوصفات (Gemini المجاني)", layout="centered")
+st.set_page_config(page_title="محلل الوصفات (Gemini المجاااااني)", layout="centered")
 
 # --- العنوان ---
 st.title("🩺 قارئ الوصفات الطبية (مجاني)")
