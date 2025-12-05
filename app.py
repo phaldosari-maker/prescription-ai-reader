@@ -59,3 +59,5 @@ if uploaded_file is not None:
                 st.markdown("### 📋 النتيجة:")
                 st.markdown(result)
                 st.warning("⚠️ تنبيه: الذكاء الاصطناعي قد يخطئ. راجع الصيدلي عبدالرحمن دائماً.")
+                pip install --upgrade google-generativeai
+
